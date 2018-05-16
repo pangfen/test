@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>test</title>
+	
+</head>
+<body>
+	<script type="text/javascript">
+		$.views.helpers({
+                "geturl": $('#APP_ROOT_PATH').val(),
+                formatDate: function (unixTime, formatType) {
+                    if (!unixTime) {
+                        return "";
+                    }
+                    var d = new Date();
+                    unixTime = String(unixTime);
+                    if (unixTime.length === 10) {
+                        unixTime += "000";
+                    }
+                    d.setTime(unixTime);
+                    return d.format(formatType);
+                }
+            });
+	</script>
+
+</body>
+</html>
