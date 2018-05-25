@@ -1,0 +1,64 @@
+/**
+ *页面描述 
+ *@作者
+ *2018年5月25日  
+ */
+ $(document).ready(function(){
+	var Index = {
+	    init:function(){
+	        console.log('ok');
+	        Index.bindEvent();
+	    },
+	    bindEvent:function(){
+
+	    },
+	    resetElement:function (obj){ 
+	        var elementHeight = $(".box1").height()+"px";
+	        var elementWidth = $(window).height()+'px';
+	        var divHtml = "<div class='box3 "+codeNum+"'></div>"; 
+	        $('obj').eq(0).append(divHtml);
+	        $(obj).css("height",imgHeight);
+	        $(obj).find('.box2').css({'height':elementHeight+'px','width':elementWidth+'px'});
+	    }
+	}    
+	
+    Index.init();
+
+    $(window).resize(function(){
+    	setTimeout(Index.resetElement(),1000);
+    })
+
+    // WebSocket是HTML5提供的一种全双工通讯的协议。浏览器和服务器只需要做一个握手的动作，就直接可以数据互相传送。
+    var websocketId = '1';//该值由后端提供，连接唯一化。一个页面可以建立多个websocket，一个websocket不能对应两个页面。
+	var socketURL = 'ws://' + window.location.host+ '/websocket/' + websocketId;
+	websocket = $.websocket(socketURL, {
+		open : function() {
+			// when the socket opens 触发
+		},
+		close : function() {
+			// when the socket closes 触发
+		},
+		//收到服务端推送消息(event1是后端提供的)
+		events : {
+			'event1' : function(event) {
+				var eventData = $.parseJSON(event.data); 
+				var code = eventData.code;
+			},
+			'event2' : function(event) {
+				
+			}			     			        				
+		}
+	});
+	// 当窗口关闭时,关闭websocket连接,防止server端异常.
+	window.onbeforeunload = function() {
+		websocket.close();
+	}
+	// 浏览器回退
+	window.onpagehide = function(event) {
+		websocket.close();
+	}
+	//如果需要发消息  
+	// websocket.send('radio', "message");  		   	    
+ })
+
+	    
