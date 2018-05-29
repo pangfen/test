@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>canvas</title>
+</head>
+<style type="text/css">
+	html,body,div{margin:0px; height: 0px;}
+</style>
+<body>
+	<div class='wrap' style='width:1000px; margin: 0 auto;'>
+	  	<canvas id="canvas" width="1000" height="800" style="background: #eee;">
+	  		Your browser does not support the canvas element.
+	  	</canvas>
+	</div>
+	<script  src="http://libs.baidu.com/jquery/1.7.2/jquery.min.js"></script>
+
+	<!-- Internet Explorer 8 以及更早的版本不支持 <canvas> 标签 -->
+	<script type="text/javascript">
+		$(document).ready(function(){ 
+	            var canvas=document.getElementById("canvas");  
+	            var ctx=canvas.getContext("2d"); 
+	            ctx.save();
+	            //画圆
+	            ctx.beginPath(); 
+	            ctx.arc(100,100,30,0,2*Math.PI);  //x,y,半径,初始弧度，终止弧度
+	            ctx.fillStyle = "green";
+	            ctx.fill(); 
+	            ctx.save();
+	            // 再画一个形状
+	            ctx.beginPath(); 
+	            ctx.arc(300,100,30,0.5*Math.PI,2*Math.PI);  
+	            ctx.fillStyle = "#FF7A3A";
+	            ctx.fill(); 
+	            //绘文字
+	            ctx.fillStyle="white"; 
+	            ctx.font="14px MicrosoftYaHei-Bold";
+	            ctx.fillText('绿',93,107);//文字，距离左边的距离，文字底部距离上面的距离（baseline），可以设置textAlign，就不用计算了；
+	            ctx.fillText('呵',293,107);
+	            ctx.save();
+
+				//箭头
+				drawArrow(ctx, 0, 0, 100, 100, 30, 10,2,"red");
+		        function drawArrow(ctx, fromX, fromY, toX, toY, theta, headlen, width, color) {
+		            theta = typeof(theta) != 'undefined' ? theta: 30;
+		            headlen = typeof(theta) != 'undefined' ? headlen: 10;//斜率
+		            width = typeof(width) != 'undefined' ? width: 1;//线宽
+		            color = typeof(color) != 'color' ? color: '#000';//线的颜色
+		            var angle = Math.atan2(fromY - toY, fromX - toX) * 180 / Math.PI,//弧度,
+		            angle1 = (angle + theta) * Math.PI / 180,
+		            angle2 = (angle - theta) * Math.PI / 180,
+		            topX = headlen * Math.cos(angle1),//p3
+		            topY = headlen * Math.sin(angle1),
+		            botX = headlen * Math.cos(angle2),//p4
+		            botY = headlen * Math.sin(angle2);
+		           
+		            ctx.lineWidth=width; 
+		            ctx.strokeStyle=color;
+					// 箭头中间直线
+		            ctx.beginPath();
+		            ctx.moveTo(fromX, fromY);
+		            ctx.lineTo(toX, toY); 
+		            ctx.closePath();
+		            ctx.stroke();
+		            //上箭头
+		            ctx.beginPath();
+		            var arrowX = fromX - topX,
+		            arrowY = fromY - topY;
+		            ctx.fillStyle='green';
+		            ctx.moveTo(arrowX, arrowY);
+		            ctx.lineTo(fromX, fromY);
+		        
+		            //下箭头
+		            barrowX = fromX - botX;
+		            barrowY = fromY - botY;
+		            ctx.lineTo(barrowX, barrowY);
+		            ctx.closePath();
+		            ctx.fill();
+		            ctx.save();
+		        }
+		        //圆阴影
+	            function drawCircle(){
+	            	ctx.beginPath();  
+	                ctx.arc(300,500,30,0,2*Math.PI); 
+	                ctx.closePath();
+	                ctx.shadowOffsetX=0;
+	                ctx.shadowOffsetY=4; 
+	                ctx.shadowColor="black"; 
+	                ctx.shadowBlur=20; 
+	                var gradient = ctx.createLinearGradient(300, 500-30, 500, 500+30);//渐变
+	                gradient.addColorStop(0, 'green'); 
+	                gradient.addColorStop(1, 'white');
+	                ctx.fillStyle = gradient;//中心原点渐变色
+	                ctx.fill();
+	                ctx.save();
+	            }	            
+				drawCircle();
+				var tmpText ='换行操作的问题处理';
+                setTimeout(function(){
+                	drawCircle();
+                	ctx.fillStyle="#fff"; 
+                    ctx.font="16px MicrosoftYaHei-Bold";
+                    ctx.textAlign="center" ; 
+                    ctx.textBaseline="middle" ;     
+                    // ctx.fillText( '变',300 ,500);
+                    // 下面是换行的问题，待研究???????
+                    var lineWidth = 0;
+					var redWidth = 32; 
+					var lastSubStrIndex= 0;
+					var tmpCenterY = 500; 
+					if(tmpText.length<=6){ 
+					    fillText(0);
+					}else if(tmpText.length<12){
+					    fillText(8);
+					}else {
+					    fillText(16);
+					}
+ 					function fillText(moveY){
+	                    for(var i=0;i<tmpText.length;i++){ 
+	                        lineWidth+=ctx.measureText(tmpText[i]).width; 
+	                        if(lineWidth>redWidth){
+	                            ctx.fillText(tmpText.substring(lastSubStrIndex,i),300,tmpCenterY-moveY);
+	                            tmpCenterY+=20;//行高
+	                            lineWidth=0;
+	                            lastSubStrIndex=i;
+	                        } 
+	                        if(i==tmpText.length-1){
+	                            ctx.fillText(tmpText.substring(lastSubStrIndex,i+1),300,tmpCenterY-moveY);
+	                        }
+	                    }
+	                } 
+                },1000); 
+
+		})
+	</script> 
+</body>
+</html>
