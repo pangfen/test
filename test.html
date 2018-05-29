@@ -5,9 +5,9 @@
 	
 </head>
 <body>
-	<script type="text/javascript">
-		$.views.helpers({
-                "geturl": $('#APP_ROOT_PATH').val(),
+<script type="text/javascript">
+	$.views.helpers({
+                "geturl": $('#APP').val(),
                 formatDate: function (unixTime, formatType) {
                     if (!unixTime) {
                         return "";
@@ -46,7 +46,23 @@
         return format;
     };
     //调用：<p>{{:~formatDate(createdDatetime)}}</p>
-	</script>
+</script>
+<script id="boxTemplate" type="text/x-jsrender">
+    <div  data-id={{:id}}>
+	{{if id == 1 }}
+		 <div class="name">{{:name}}</div>
+	{{else  id == 2 }} 
+		<div class="time">{{:~formatDate(time)}}</div>
+	{{else  id == 3 }}
+		<div class="name">{{>html}}转义，即HTML代码可以被编译</div>	
+	{{/if}} 
 
+	{{for list}}
+		<div>{{:#index + 1}}. this animal call {{:name}} 遍历数组</div>
+	{{else}} 
+		<div>没有数据</div>
+	{{/for}}
+    </div> 
+</script> 
 </body>
 </html>
